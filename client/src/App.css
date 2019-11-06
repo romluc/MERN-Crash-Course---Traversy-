@@ -18,3 +18,8 @@
 	opacity: 0.01;
 	transition: opacity 1000ms ease-in;
 }
+
+.list-container {
+	align-items: center;
+	justify-content: center;
+}

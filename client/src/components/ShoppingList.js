@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
-import { Container, ListGroup, ListGroupItem, Button } from 'reactstrap';
+import {
+	Container,
+	ListGroup,
+	ListGroupItem,
+	Button,
+	Spinner
+} from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { connect } from 'react-redux';
-import { getItems, deleteItem } from '../actions/itemActions';
+import { getItems, deleteItem, setItemsLoading } from '../actions/itemActions';
 import PropTypes from 'prop-types';
 
 class ShoppingList extends Component {
 	componentDidMount() {
+		// this.props.setItemsLoading();
 		this.props.getItems();
 	}
 
@@ -16,27 +23,32 @@ class ShoppingList extends Component {
 
 	render() {
 		const { items } = this.props.item;
+		const { loading } = this.props.item;
 		return (
-			<Container>
-				<ListGroup>
-					<TransitionGroup className='shopping-list'>
-						{items.map(({ _id, name }) => (
-							<CSSTransition key={_id} timeout={500} classNames='fade'>
-								<ListGroupItem>
-									<Button
-										className='remove-btn'
-										color='danger'
-										size='sm'
-										onClick={this.onDeleteClick.bind(this, _id)}
-									>
-										&times;
-									</Button>
-									{name}
-								</ListGroupItem>
-							</CSSTransition>
-						))}
-					</TransitionGroup>
-				</ListGroup>
+			<Container className='listgroup-container'>
+				{loading ? (
+					<Spinner color='secondary' />
+				) : (
+					<ListGroup>
+						<TransitionGroup className='shopping-list'>
+							{items.map(({ _id, name }) => (
+								<CSSTransition key={_id} timeout={500} classNames='fade'>
+									<ListGroupItem>
+										<Button
+											className='remove-btn'
+											color='danger'
+											size='sm'
+											onClick={this.onDeleteClick.bind(this, _id)}
+										>
+											&times;
+										</Button>
+										{name}
+									</ListGroupItem>
+								</CSSTransition>
+							))}
+						</TransitionGroup>
+					</ListGroup>
+				)}
 			</Container>
 		);
 	}
@@ -44,14 +56,16 @@ class ShoppingList extends Component {
 
 ShoppingList.propTypes = {
 	getItems: PropTypes.func.isRequired,
+	setItemsLoading: PropTypes.func,
 	item: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-	item: state.item
+	item: state.item,
+	loading: state.loading
 });
 
 export default connect(
 	mapStateToProps,
-	{ getItems, deleteItem }
+	{ getItems, deleteItem, setItemsLoading }
 )(ShoppingList);
