@@ -10,6 +10,8 @@ import {
 	Input
 } from 'reactstrap';
 import { connect } from 'react-redux';
+import uuid from 'uuid';
+
 import { addItem } from '../actions/itemActions';
 
 class ItemModal extends Component {
@@ -26,6 +28,21 @@ class ItemModal extends Component {
 
 	onChange = e => {
 		this.setState({ [e.target.name]: e.target.value });
+	};
+
+	onSubmit = e => {
+		e.preventDefault();
+
+		const newItem = {
+			id: uuid(),
+			name: this.state.name
+		};
+
+		//Add item via addItem action
+		this.props.addItem(newItem);
+
+		// Close modal
+		this.toggle();
 	};
 
 	render() {
@@ -52,6 +69,9 @@ class ItemModal extends Component {
 									placeholder='Add shopping item'
 									onChange={this.onChange}
 								/>
+								<Button color='dark' style={{ marginTop: '2rem' }} block>
+									Add Item
+								</Button>
 							</FormGroup>
 						</Form>
 					</ModalBody>
