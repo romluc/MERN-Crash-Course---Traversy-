@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { Container, ListGroup, ListGroupItem, Button } from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import uuid from 'uuid';
 import { connect } from 'react-redux';
-import { getItems } from '../actions/itemActions';
+import { getItems, deleteItem } from '../actions/itemActions';
 import PropTypes from 'prop-types';
-import { __makeTemplateObject } from 'tslib';
 
 class ShoppingList extends Component {
 	componentDidMount() {
 		this.props.getItems();
 	}
+
+	onDeleteClick = id => {
+		this.props.deleteItem(id);
+	};
 
 	render() {
 		const { items } = this.props.item;
@@ -39,11 +41,7 @@ class ShoppingList extends Component {
 										className='remove-btn'
 										color='danger'
 										size='sm'
-										onClick={() => {
-											this.setState(state => ({
-												items: state.items.filter(item => item.id !== id)
-											}));
-										}}
+										onClick={this.onDeleteClick.bind(this, id)}
 									>
 										&times;
 									</Button>
@@ -69,5 +67,5 @@ const mapStateToProps = state => ({
 
 export default connect(
 	mapStateToProps,
-	{ getItems }
+	{ getItems, deleteItem }
 )(ShoppingList);
